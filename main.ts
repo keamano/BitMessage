@@ -1,13 +1,25 @@
 import { app, BrowserWindow, screen } from 'electron';
+import { ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+
+import { Block } from './src_blockchain/block';
+import { BlockChain } from './src_blockchain/blockchain';
+import {P2P } from './src_blockchain/p2p';
+
+const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
-function createWindow() {
+let blockChain: BlockChain;
+let p2p: P2P;
 
+///////////////////////////
+//
+///////////////////////////
+function createWindow() {
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
@@ -21,7 +33,8 @@ function createWindow() {
 
   if (serve) {
     require('electron-reload')(__dirname, {
-     electron: require(`${__dirname}/node_modules/electron`)});
+      electron: require(`${__dirname}/node_modules/electron`)
+    });
     win.loadURL('http://localhost:4200');
   } else {
     win.loadURL(url.format({
@@ -42,6 +55,9 @@ function createWindow() {
   });
 }
 
+///////////////////////////
+//
+///////////////////////////
 try {
 
   // This method will be called when Electron has finished
@@ -70,3 +86,48 @@ try {
   // Catch Error
   // throw e;
 }
+
+///////////////////////////
+//
+///////////////////////////
+function initBlockChain() {
+  blockChain = new BlockChain();
+  p2p = new P2P();
+
+  blockChain.init(p2p);
+  p2p.init(blockChain);
+
+  p2p.initP2PServer(p2pPort);
+}
+
+///////////////////////////
+//
+///////////////////////////
+function initIpcMain() {
+
+  ipcMain.on('/blocks', function (event, args) {
+    // win.webContents.send('/blocks', blockChain.getBlockchain());
+    event.returnValue = blockChain.getBlockchain();
+  });
+
+  ipcMain.on('/mineBlock', function (event, args) {
+    const newBlock: Block = blockChain.generateNextBlock(args);
+    // win.webContents.send('/mineBlock', newBlock)
+    event.returnValue = newBlock;
+  });
+
+  ipcMain.on('/peers', function (event, args) {
+    const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
+    // win.webContents.send('/peers', peers);
+    event.returnValue = peers;
+  });
+
+  ipcMain.on('/addPeer', function (event, args) {
+    p2p.connectToPeers(args);
+    // win.webContents.send('/addPeer');
+    event.returnValue = true;
+  })
+}
+
+initBlockChain();
+initIpcMain();

@@ -2,4 +2,9 @@
   <h1 class="title">
     {{ 'PAGES.HOME.TITLE' | translate }}
   </h1>
+
+  <button type="button" (click)="blocks()">blocks</button>
+  <button type="button" (click)="mineBlock('data')">mineBlock</button>
+  <button type="button" (click)="peers()">peers</button>
+  <button type="button" (click)="addPeer('127.0.0.1','8080')">addPeer</button>
 </div>
