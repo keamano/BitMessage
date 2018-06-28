@@ -1,0 +1,12 @@
+<div>
+  <label for="peer">port:</label>
+  <input id="peer" name="peer" type="text" #peer />
+  <button type="button" (click)="addPeer(peer.value)">Add Peer</button>
+
+  <ul>
+      <li *ngFor="let peer of peers">{{peer}}</li>
+  </ul>
+</div>
+
+
+

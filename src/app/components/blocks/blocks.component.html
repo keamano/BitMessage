@@ -1,0 +1,29 @@
+<button type="button" (click)="mineBlock('test')">mineBlock</button>
+
+<div>
+  <table border="1" width="600" height="400" cellspacing="0" cellpadding="5">
+    <thead>
+      <tr>
+        <th>index</th>
+        <th>hash</th>
+        <th>previousHash</th>
+        <th>timestamp</th>
+        <th>data</th>
+        <th>difficulty</th>
+        <th>nonce</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let block of blocks">
+        <td>{{block.index}}</td>
+        <td>{{block.hash | slice:0:12}}...</td>
+        <td>{{block.previousHash | slice:0:12}}...</td>
+        <td>{{block.timestamp}}</td>
+        <td>{{block.data}}</td>
+        <td>{{block.difficulty}}</td>
+        <td>{{block.nonce}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

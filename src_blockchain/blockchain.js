@@ -10,13 +10,16 @@ var BlockChain = /** @class */ (function () {
         // ブロックチェーンの格納
         this.blockchain = [block_1.Block.GENESIS_BLOK];
     }
+    // 自分がブロックを追加した
     BlockChain.prototype.addBlock = function (newBlock) {
         if (BlockChain.isValidNewBlock(newBlock, this.getLatestBlock())) {
             this.blockchain.push(newBlock);
+            this.callback(this.blockchain);
         }
     };
-    BlockChain.prototype.init = function (p2p) {
+    BlockChain.prototype.init = function (p2p, callback) {
         this.p2p = p2p;
+        this.callback = callback;
     };
     // ブロックチェーンを返す
     BlockChain.prototype.getBlockchain = function () {
@@ -48,9 +51,11 @@ var BlockChain = /** @class */ (function () {
         return newBlock;
     };
     // ブロックをブロックチェーンへ追加する
+    // Peerがブロックを追加した
     BlockChain.prototype.addBlockToChain = function (newBlock) {
         if (BlockChain.isValidNewBlock(newBlock, this.getLatestBlock())) {
             this.blockchain.push(newBlock);
+            this.callback(this.blockchain);
             return true;
         }
         return false;
@@ -61,6 +66,7 @@ var BlockChain = /** @class */ (function () {
             BlockChain.getAccumulatedDifficulty(newBlocks) > BlockChain.getAccumulatedDifficulty(this.getBlockchain())) {
             console.log('Received blockchain is valid. Replacing current blockchain with received blockchain');
             this.blockchain = newBlocks;
+            this.callback(this.blockchain);
             this.p2p.broadcastLatest();
         }
         else {

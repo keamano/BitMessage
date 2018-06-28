@@ -19,9 +19,11 @@ export class P2P {
     private sockets: WebSocket[] = [];
 
     private blockChain: BlockChain;
+    private callback: Function;
 
-    public init(blockChain: BlockChain) {
+    public init(blockChain: BlockChain, callback: Function) {
         this.blockChain = blockChain;
+        this.callback = callback;
     }
 
     public getSockets() {
@@ -40,7 +42,8 @@ export class P2P {
     // WebSocketのコネクションを初期化
     private initConnection(ws: WebSocket) {
         this.sockets.push(ws);
-
+        this.callback(this.sockets);
+        
         // ハンドラーの設定
         this.initMessageHandler(ws);
         this.initErrorHandler(ws);
@@ -124,6 +127,7 @@ export class P2P {
         const closeConnection = (myWs: WebSocket) => {
             console.log('connection failed to peer: ' + myWs.url);
             this.sockets.splice(this.sockets.indexOf(myWs), 1);
+            this.callback(this.sockets);
         };
         ws.on('close', () => closeConnection(ws));
         ws.on('error', () => closeConnection(ws));

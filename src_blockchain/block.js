@@ -84,7 +84,6 @@ var Block = /** @class */ (function () {
         var hashInBinary = util_1.Util.hexToBinary(hash);
         // const requiredPrefix: string = '0'.repeat(difficulty);
         // return hashInBinary.startsWith(requiredPrefix);
-        console.log(hashInBinary);
         var equiredPrefix = '';
         for (var i = 0; i < difficulty; i++) {
             equiredPrefix += '0';

@@ -2,7 +2,6 @@ import { Block } from './block';
 import { Util } from './util';
 import { P2P } from './p2p';
 
-
 export class BlockChain {
 
     ////////////////////////////////////////
@@ -12,9 +11,11 @@ export class BlockChain {
     // ブロックチェーンの格納
     private blockchain: Block[] = [Block.GENESIS_BLOK];
 
+    // 自分がブロックを追加した
     private addBlock(newBlock: Block) {
         if (BlockChain.isValidNewBlock(newBlock, this.getLatestBlock())) {
             this.blockchain.push(newBlock);
+            this.callback(this.blockchain);
         }
     }
 
@@ -23,9 +24,11 @@ export class BlockChain {
     ////////////////////////////////////////
 
     private p2p: P2P;
+    private callback: Function;
 
-    public init(p2p: P2P): void {
+    public init(p2p: P2P, callback:Function): void {
         this.p2p = p2p;
+        this.callback = callback;
     }
 
     // ブロックチェーンを返す
@@ -65,9 +68,11 @@ export class BlockChain {
     }
 
     // ブロックをブロックチェーンへ追加する
+    // Peerがブロックを追加した
     public addBlockToChain(newBlock: Block) {
         if (BlockChain.isValidNewBlock(newBlock, this.getLatestBlock())) {
             this.blockchain.push(newBlock);
+            this.callback(this.blockchain);
             return true;
         }
         return false;
@@ -79,6 +84,7 @@ export class BlockChain {
             BlockChain.getAccumulatedDifficulty(newBlocks) > BlockChain.getAccumulatedDifficulty(this.getBlockchain())) {
             console.log('Received blockchain is valid. Replacing current blockchain with received blockchain');
             this.blockchain = newBlocks;
+            this.callback(this.blockchain);
             this.p2p.broadcastLatest();
         } else {
             console.log('Received blockchain invalid');

@@ -5,7 +5,7 @@ import * as url from 'url';
 
 import { Block } from './src_blockchain/block';
 import { BlockChain } from './src_blockchain/blockchain';
-import {P2P } from './src_blockchain/p2p';
+import { P2P } from './src_blockchain/p2p';
 
 const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
@@ -94,8 +94,14 @@ function initBlockChain() {
   blockChain = new BlockChain();
   p2p = new P2P();
 
-  blockChain.init(p2p);
-  p2p.init(blockChain);
+  blockChain.init(p2p, function (blocks: Block[]) {
+    win.webContents.send('/onBlocks', blockChain.getBlockchain());
+  });
+
+  p2p.init(blockChain, function (websockets: WebSocket[]) {
+    const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
+    win.webContents.send('/onPeers', peers);
+  });
 
   p2p.initP2PServer(p2pPort);
 }
@@ -106,26 +112,39 @@ function initBlockChain() {
 function initIpcMain() {
 
   ipcMain.on('/blocks', function (event, args) {
-    // win.webContents.send('/blocks', blockChain.getBlockchain());
-    event.returnValue = blockChain.getBlockchain();
+    // 同期
+    // event.returnValue = blockChain.getBlockchain();
+
+    // 非同期
+    win.webContents.send('/onBlocks', blockChain.getBlockchain());
   });
 
   ipcMain.on('/mineBlock', function (event, args) {
+    // 非同期
     const newBlock: Block = blockChain.generateNextBlock(args);
+    // event.returnValue = newBlock;
+
+    // 非同期
     // win.webContents.send('/mineBlock', newBlock)
-    event.returnValue = newBlock;
   });
 
   ipcMain.on('/peers', function (event, args) {
+    // 同期
+    // const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
+    // event.returnValue = peers;
+
+    // 非同期
     const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
-    // win.webContents.send('/peers', peers);
-    event.returnValue = peers;
+    win.webContents.send('/onPeers', peers);
   });
 
   ipcMain.on('/addPeer', function (event, args) {
+    // 非同期
     p2p.connectToPeers(args);
+    // event.returnValue = true;
+
+    // 非同期
     // win.webContents.send('/addPeer');
-    event.returnValue = true;
   })
 }
 

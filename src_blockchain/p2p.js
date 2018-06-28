@@ -17,8 +17,9 @@ var P2P = /** @class */ (function () {
     function P2P() {
         this.sockets = [];
     }
-    P2P.prototype.init = function (blockChain) {
+    P2P.prototype.init = function (blockChain, callback) {
         this.blockChain = blockChain;
+        this.callback = callback;
     };
     P2P.prototype.getSockets = function () {
         return this.sockets;
@@ -35,6 +36,7 @@ var P2P = /** @class */ (function () {
     // WebSocketのコネクションを初期化
     P2P.prototype.initConnection = function (ws) {
         this.sockets.push(ws);
+        this.callback(this.sockets);
         // ハンドラーの設定
         this.initMessageHandler(ws);
         this.initErrorHandler(ws);
@@ -113,6 +115,7 @@ var P2P = /** @class */ (function () {
         var closeConnection = function (myWs) {
             console.log('connection failed to peer: ' + myWs.url);
             _this.sockets.splice(_this.sockets.indexOf(myWs), 1);
+            _this.callback(_this.sockets);
         };
         ws.on('close', function () { return closeConnection(ws); });
         ws.on('error', function () { return closeConnection(ws); });
