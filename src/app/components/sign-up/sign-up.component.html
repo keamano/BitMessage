@@ -1,0 +1,14 @@
+<h1>Message</h1>
+<form #myForm="ngForm" (ngSubmit)="signUp()">
+
+  <div>
+    <label for="name">Your Name : </label>
+    <input id="name" name="name" type="text" [(ngModel)]="userName" required minlength="2" maxlength="10" #name="ngModel" />
+    <p [hidden]="!name.errors?.required">Name is required.</p>
+    <p [hidden]="!name.errors?.minlength">Please enter a name with at least 2 letters.</p>
+    <p [hidden]="!name.errors?.maxlength">Name must be 10 characters or less.</p>
+  </div>
+
+  <input type="submit" value="Sign Up" [disabled]="myForm.invalid" />
+
+</form>

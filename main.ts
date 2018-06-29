@@ -3,16 +3,23 @@ import { ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
+import { Me } from './src_blockchain/me';
+
 import { Block } from './src_blockchain/block';
 import { BlockChain } from './src_blockchain/blockchain';
 import { P2P } from './src_blockchain/p2p';
 
 const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
+// Electron
 let win, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
+// Me
+let me: Me;
+
+// Block Chain
 let blockChain: BlockChain;
 let p2p: P2P;
 
@@ -88,6 +95,15 @@ try {
 }
 
 ///////////////////////////
+// ユーザ読み込み
+///////////////////////////
+function initMe() {
+  me = new Me();
+  me.load();
+}
+initMe();
+
+///////////////////////////
 //
 ///////////////////////////
 function initBlockChain() {
@@ -105,6 +121,7 @@ function initBlockChain() {
 
   p2p.initP2PServer(p2pPort);
 }
+initBlockChain();
 
 ///////////////////////////
 //
@@ -145,8 +162,18 @@ function initIpcMain() {
 
     // 非同期
     // win.webContents.send('/addPeer');
-  })
-}
+  });
 
-initBlockChain();
+  // ユーザ管理
+
+  ipcMain.on('/signUp', function (event, args) {
+    me.name = args;
+    me.save();
+    win.webContents.send('/onMe', me.name);
+  });
+
+  ipcMain.on('/me', function (event, args) {
+    win.webContents.send('/onMe', me.name);
+  });
+}
 initIpcMain();

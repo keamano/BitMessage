@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
+
 import { ElectronService } from './electron.service';
 import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { Block } from './block';
+import { Block } from '../interfaces/block';
 
 @Injectable({
   providedIn: 'root'

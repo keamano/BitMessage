@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ChangeDetectorRef } from '@angular/core';
 
 import { BlockChainService } from '../../providers/block-chain.service';
-import { Block } from '../../providers/block';
+import { Block } from '../../interfaces/block';
 
 @Component({
   selector: 'app-blocks',
@@ -13,16 +13,17 @@ export class BlocksComponent implements OnInit {
   blocks: Block[] = [];
 
   constructor(
-    public changeDetectorRef: ChangeDetectorRef, 
+    public changeDetectorRef: ChangeDetectorRef,
     public blockChainService: BlockChainService
   ) {
-   }
+  }
 
   ngOnInit() {
-      this.blockChainService.blocks$.subscribe(blocks => {
+    this.blockChainService.blocks$.subscribe(blocks => {
       this.blocks = blocks;
       this.changeDetectorRef.detectChanges();
-    })
+    });
+
   }
 
   mineBlock(data: String) {
