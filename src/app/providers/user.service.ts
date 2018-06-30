@@ -14,7 +14,8 @@ export class UserService {
   constructor(private electronService: ElectronService) {
 
     this.electronService.ipcRenderer.on("/onMe", (event, args) => {
-      this.meSubject.next(args);
+      const name = args;
+      this.meSubject.next(name);
     });
 
     this.me();

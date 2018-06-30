@@ -1,0 +1,23 @@
+<form #myForm="ngForm" (ngSubmit)="send();myForm.reset();">
+
+  <div>
+    <label for="to">宛名：</label>
+    <input id="to" name="to" type="text" [(ngModel)]="message.to" required minlength="2" maxlength="10" #to="ngModel" />
+    <span [hidden]="!to.errors?.required">宛名は必須です。</span>
+    <span [hidden]="!to.errors?.minlength">宛名は2文字以上で入力してください。</span>
+    <span [hidden]="!to.errors?.maxlength">宛名は10文字以内で入力してください。</span>
+  </div>
+
+  <div>
+    <label for="text">本文：</label>
+    <br>
+    <textarea id="text" name="text" rows="5" cols="30" [(ngModel)]="message.text" required minlength="2" maxlength="100"
+      #text="ngModel"></textarea>
+    <span [hidden]="!text.errors?.required">メッセージは必須です。</span>
+    <span [hidden]="!text.errors?.minlength">メッセージは2文字以上で入力してください。</span>
+    <span [hidden]="!text.errors?.maxlength">メッセージは10文字以内で入力してください。</span>
+  </div>
+
+  <input type="submit" value="申込" [disabled]="myForm.invalid" />
+
+</form>

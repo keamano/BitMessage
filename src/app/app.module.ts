@@ -23,6 +23,7 @@ import { HomeComponent } from './components/home/home.component';
 import { BlocksComponent } from './components/blocks/blocks.component';
 import { PeersComponent } from './components/peers/peers.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { MessageComponent } from './components/message/message.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -36,7 +37,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     WebviewDirective,
     BlocksComponent,
     PeersComponent,
-    SignUpComponent
+    SignUpComponent,
+    MessageComponent
   ],
   imports: [
     BrowserModule,
