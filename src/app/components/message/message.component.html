@@ -1,23 +1,41 @@
-<form #myForm="ngForm" (ngSubmit)="send();myForm.reset();">
+<!-- <form #myForm="ngForm" (ngSubmit)="send();myForm.reset();"> -->
+<form #myForm="ngForm" (ngSubmit)="send()">
 
+  <!-- 送信先 -->
   <div>
-    <label for="to">宛名：</label>
     <input id="to" name="to" type="text" [(ngModel)]="message.to" required minlength="2" maxlength="10" #to="ngModel" />
-    <span [hidden]="!to.errors?.required">宛名は必須です。</span>
-    <span [hidden]="!to.errors?.minlength">宛名は2文字以上で入力してください。</span>
-    <span [hidden]="!to.errors?.maxlength">宛名は10文字以内で入力してください。</span>
+    <label for="to">さんへ</label>
+    <ul>
+      <li [hidden]="!to.errors?.required">宛名は必須です。</li>
+      <li [hidden]="!to.errors?.minlength">宛名は2文字以上で入力してください。</li>
+      <li [hidden]="!to.errors?.maxlength">宛名は10文字以内で入力してください。</li>
+    </ul>
   </div>
 
+  <!-- フォント選択 -->
   <div>
-    <label for="text">本文：</label>
-    <br>
-    <textarea id="text" name="text" rows="5" cols="30" [(ngModel)]="message.text" required minlength="2" maxlength="100"
-      #text="ngModel"></textarea>
-    <span [hidden]="!text.errors?.required">メッセージは必須です。</span>
-    <span [hidden]="!text.errors?.minlength">メッセージは2文字以上で入力してください。</span>
-    <span [hidden]="!text.errors?.maxlength">メッセージは10文字以内で入力してください。</span>
+    <select id="fonts" name="fonts" [(ngModel)]="message.font" required>
+      <option value="{{i+1}}" label="フォント{{i+1}}" *ngFor="let font of FONTS ; index as i"></option>
+    </select>
   </div>
 
-  <input type="submit" value="申込" [disabled]="myForm.invalid" />
+  <!-- カード選択 -->
+  <div>
+    <select id="cards" name="cards" [(ngModel)]="message.card" required>
+      <option value="{{i+1}}" label="カード{{i+1}}" *ngFor="let card of CARDS ; index as i"></option>
+    </select>
+  </div>
+
+  <!-- メッセージ選択 -->
+  <div>
+    <textarea id="text" name="text" rows="5" cols="30" [(ngModel)]="message.text" required minlength="2" maxlength="100" #text="ngModel"></textarea>
+    <ul>
+      <li [hidden]="!text.errors?.required">メッセージは必須です。</li>
+      <li [hidden]="!text.errors?.minlength">メッセージは2文字以上で入力してください。</li>
+      <li [hidden]="!text.errors?.maxlength">メッセージは10文字以内で入力してください。</li>
+    </ul>
+  </div>
+
+  <input type="submit" value="送る" [disabled]="myForm.invalid" />
 
 </form>

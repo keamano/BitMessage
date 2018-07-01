@@ -1,0 +1,7 @@
+<div id="box-list">
+  <div class="{{'box' + message.card}} box {{'wf-' + message.font}}" *ngFor="let message of messages">
+    <span class="box-title">{{message.from}} より</span>
+    <p>{{message.text}}</p>
+    <p class="box-footer">{{message.to}} さんへ ({{message.date | date:'fullDate'}})</p>
+  </div>
+</div>

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 
 import { UserService } from '../../providers/user.service';
 import { MessageService } from '../../providers/message.service';
@@ -12,15 +11,16 @@ import { Message } from '../../interfaces/message';
 })
 export class MessageComponent implements OnInit {
 
-  myForm: FormGroup;
+  readonly FONTS = Array(7);
+  readonly CARDS = Array(30);
 
-  public message: Message = {
+  message: Message = {
     from: "",
     to: "",
     text: "",
     card: 0,
     font: 0,
-    date: 0
+    date: ""
   };
 
   constructor(
@@ -29,7 +29,6 @@ export class MessageComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-
     // 自分の名前を取得する
     this.userService.me$.subscribe(name => {
       this.message.from = name;
@@ -38,7 +37,8 @@ export class MessageComponent implements OnInit {
 
   // メッセージを送信する
   send() {
-    this.message.date = new Date().getTime() / 1000;
+    this.message.date = new Date().toString();
+
     this.messageService.send(this.message);
   }
 

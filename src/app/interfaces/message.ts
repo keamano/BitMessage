@@ -4,5 +4,5 @@ export interface Message {
     text: string;
     card: number;
     font: number;
-    date: number;
+    date: string;
 }

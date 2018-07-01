@@ -24,6 +24,7 @@ import { BlocksComponent } from './components/blocks/blocks.component';
 import { PeersComponent } from './components/peers/peers.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { MessageComponent } from './components/message/message.component';
+import { MessageListComponent } from './components/message-list/message-list.component';
 
 // AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
@@ -38,7 +39,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     BlocksComponent,
     PeersComponent,
     SignUpComponent,
-    MessageComponent
+    MessageComponent,
+    MessageListComponent
   ],
   imports: [
     BrowserModule,
