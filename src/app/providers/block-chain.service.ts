@@ -52,6 +52,7 @@ export class BlockChainService {
   }
 
   addPeer(ip: string, port: string) {
+    console.log(`ws://${ip}:${port}`);
     this.electronService.ipcRenderer.send("/addPeer", `ws://${ip}:${port}`);
   }
 }

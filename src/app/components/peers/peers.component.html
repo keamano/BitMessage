@@ -1,7 +1,9 @@
 <div>
-  <label for="peer">port:</label>
-  <input id="peer" name="peer" type="text" #peer />
-  <button type="button" (click)="addPeer(peer.value)">Add Peer</button>
+  <label for="host">host:</label>
+  <input id="host" name="host" type="text" #host />
+  <label for="port">port:</label>
+  <input id="port" name="port" type="text" #port />
+  <button type="button" (click)="addPeer(host.value, port.value)">Add Peer</button>
 
   <ul>
       <li *ngFor="let peer of peers">{{peer}}</li>
