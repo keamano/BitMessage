@@ -9,6 +9,8 @@ import { Block } from './src_blockchain/block';
 import { BlockChain } from './src_blockchain/blockchain';
 import { P2P } from './src_blockchain/p2p';
 
+import bonjour = require('bonjour');
+
 const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
 // Electron
@@ -98,7 +100,7 @@ try {
 // ユーザ読み込み
 ///////////////////////////
 function initMe() {
-  me = new Me();
+  me = new Me(app.getPath('userData'));
   me.load();
 }
 initMe();
@@ -177,3 +179,29 @@ function initIpcMain() {
   });
 }
 initIpcMain();
+
+function initBonjour() {
+  let bonjourOptions: bonjour.BonjourOptions;
+  let bonjourInstance: bonjour.Bonjour;
+
+  let serviceOptions: bonjour.ServiceOptions;
+  let service: bonjour.Service;
+
+  let browserOptions: bonjour.BrowserOptions;
+  let browser: bonjour.Browser;
+
+  bonjourOptions = {};
+  bonjourInstance = bonjour(bonjourOptions);
+
+  // Publish a dummy server under name 'My Website' type http port 3000
+  serviceOptions = { name: 'Bit Message', type: 'ws', port: p2pPort };
+  service = bonjourInstance.publish(serviceOptions);
+
+  browserOptions = { type: 'ws' };
+  // Look for the server
+  browser = bonjourInstance.find(browserOptions, (srv: bonjour.Service) => {
+    // You can test here if the found server (srv) name is 'My Website'
+    console.log(srv);
+  });
+}
+initBonjour();
