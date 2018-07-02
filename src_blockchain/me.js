@@ -2,9 +2,9 @@
 exports.__esModule = true;
 var fs_1 = require("fs");
 var Me = /** @class */ (function () {
-    function Me() {
+    function Me(dataDir) {
         this.name = "";
-        this.file = 'user.txt';
+        this.file = dataDir + '/' + 'user.txt';
     }
     Me.prototype.load = function () {
         if (fs_1.existsSync(this.file)) {

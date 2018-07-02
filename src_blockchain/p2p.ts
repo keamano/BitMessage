@@ -180,9 +180,4 @@ export class P2P {
             console.log('connection failed');
         });
     }
-    
-
-
-
-
 }

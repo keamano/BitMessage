@@ -3,7 +3,11 @@ import { existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 export class Me {
     name: string = "";
 
-    file: string = 'user.txt';
+    file: string;
+
+    constructor(dataDir: string) {
+        this.file = dataDir + '/' + 'user.txt';
+    }
 
     load() {
         if (existsSync(this.file)) {
