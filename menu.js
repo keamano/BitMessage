@@ -1,20 +1,23 @@
 "use strict";
 exports.__esModule = true;
 var electron_1 = require("electron");
-function getMenuTemplate() {
+function getMenuTemplate(toggleExplorer, togglePeer) {
     var MENU_TEMPLATE = [
-        {},
         {
             label: 'BlockChain',
             submenu: [
                 {
                     label: 'Explorer',
                     accelerator: 'CmdOrCtrl+E',
-                    role: 'undo'
+                    click: function (item, focusedWindow) {
+                        toggleExplorer(focusedWindow);
+                    }
                 }, {
                     label: 'Peer',
-                    accelerator: 'Shift+CmdOrCtrl+P',
-                    role: 'Peer'
+                    accelerator: 'CmdOrCtrl+P',
+                    click: function (item, focusedWindow) {
+                        togglePeer(focusedWindow);
+                    }
                 }
             ]
         }, {

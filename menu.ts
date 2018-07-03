@@ -1,6 +1,6 @@
-import { BrowserWindow, MenuItemConstructorOptions, WebContents, webContents } from 'electron';
+import { BrowserWindow, MenuItemConstructorOptions, WebContents } from 'electron';
 
-export function getMenuTemplate(): MenuItemConstructorOptions[] {
+export function getMenuTemplate(toggleExplorer: Function, togglePeer: Function): MenuItemConstructorOptions[] {
 
     const MENU_TEMPLATE: MenuItemConstructorOptions[] = [
         {
@@ -9,11 +9,15 @@ export function getMenuTemplate(): MenuItemConstructorOptions[] {
                 {
                     label: 'Explorer',
                     accelerator: 'CmdOrCtrl+E',
-                    role: 'undo'
+                    click: (item, focusedWindow) => {
+                        toggleExplorer(focusedWindow);
+                    }
                 }, {
                     label: 'Peer',
-                    accelerator: 'Shift+CmdOrCtrl+P',
-                    role: 'Peer'
+                    accelerator: 'CmdOrCtrl+P',
+                    click: (item, focusedWindow) => {
+                        togglePeer(focusedWindow);
+                    }
                 }
             ]
         }, {

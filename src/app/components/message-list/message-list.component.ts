@@ -51,15 +51,15 @@ export class MessageListComponent implements OnInit, OnDestroy {
             this.users.push(message.to);
           }
 
-          let isToMeMessage = message.to === this.me;
-          let isFromMeMessage = message.from === this.me;
+          let isToMeMessage = (message.to === this.me);
+          let isFromMeMessage = (message.from === this.me);
 
           if (isToMeMessage) {
             toMeMessageLenght++;
           }
 
           // 自分へと自分からのメッセージのみ
-          return isToMeMessage || isFromMeMessage;
+          return (isToMeMessage || isFromMeMessage);
           // 自分へのメッセージのみ
           // return isToMeMessage;
         });
@@ -67,16 +67,7 @@ export class MessageListComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
 
         if (toMeMessageLenght > 0 && toMeMessageLenght > this.toMeMessageLenght) {
-          const lastMessage = this.messages[this.messages.length -1];
-
-          // 現在時刻から１０秒以内のメッセージの場合、通知
-          const nowTime = Date.parse((new Date().toString()));
-          const lastTime = Date.parse(lastMessage.date);
-          if (nowTime - lastTime > 0) {
-            return;
-          }
-
-          this.messageService.nofity(lastMessage);
+          this.notify();
         }
         this.toMeMessageLenght = toMeMessageLenght;
       });
@@ -86,5 +77,18 @@ export class MessageListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.meSubscription.unsubscribe();
     this.meSubscription.unsubscribe();
+  }
+
+  private notify() {
+    const lastMessage = this.messages[this.messages.length -1];
+
+    // 現在時刻から１０秒以内のメッセージの場合、通知
+    const nowTime = Date.parse((new Date().toString()));
+    const lastTime = Date.parse(lastMessage.date);
+    if (nowTime - lastTime > 0) {
+      return;
+    }
+
+    this.messageService.nofity(lastMessage);
   }
 }

@@ -1,6 +1,6 @@
 import { networkInterfaces } from 'os';
 
-import { app, BrowserWindow, screen, Menu } from 'electron';
+import { app, BrowserWindow, screen, Menu, WebContents } from 'electron';
 import { ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
@@ -15,7 +15,8 @@ import { P2P } from './src_blockchain/p2p';
 const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
 // Electron
-let win: BrowserWindow, serve;
+let win: BrowserWindow = null, winExplore: BrowserWindow = null, winPeer: BrowserWindow = null;
+let serve: boolean;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
@@ -27,7 +28,7 @@ let blockChain: BlockChain;
 let p2p: P2P;
 
 ///////////////////////////
-//
+// メッセージウィンドウ
 ///////////////////////////
 function createWindow() {
   const electronScreen = screen;
@@ -37,7 +38,7 @@ function createWindow() {
   win = new BrowserWindow({
     x: 0,
     y: 0,
-    width: size.width,
+    width: 500,
     height: size.height
   });
 
@@ -64,12 +65,91 @@ function createWindow() {
     win = null;
   });
 
-  const menu = Menu.buildFromTemplate(getMenuTemplate())
+  const menu = Menu.buildFromTemplate(getMenuTemplate(toggleExploreWindow, togglePeerWindow));
   Menu.setApplicationMenu(menu)
 }
 
 ///////////////////////////
-//
+// エクスプローラーウィンドウ
+///////////////////////////
+function toggleExploreWindow(focusedWindow: WebContents) {
+  if (winExplore != null) {
+    winExplore.close();
+    return;
+  }
+
+  // Create the browser window.
+  winExplore = new BrowserWindow({
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 600
+  });
+
+  if (serve) {
+    require('electron-reload')(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`)
+    });
+    winExplore.loadURL('http://localhost:4200#explore');
+  } else {
+    winExplore.loadURL(url.format({
+      pathname: path.join(__dirname, 'dist/index.html#explore'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  }
+
+  // Emitted when the window is closed.
+  winExplore.on('closed', () => {
+    // Dereference the window object, usually you would store window
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    winExplore = null;
+  });
+
+}
+///////////////////////////
+// ピアウィンドウ
+///////////////////////////
+function togglePeerWindow(focusedWindow: WebContents) {
+  if (winPeer != null) {
+    winPeer.close();
+    return;
+  }
+
+  // Create the browser window.
+  winPeer = new BrowserWindow({
+    x: 0,
+    y: 0,
+    width: 300,
+    height: 400
+  });
+
+  if (serve) {
+    require('electron-reload')(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`)
+    });
+    winPeer.loadURL('http://localhost:4200#peer');
+  } else {
+    winPeer.loadURL(url.format({
+      pathname: path.join(__dirname, 'dist/index.html#peer'),
+      protocol: 'file:',
+      slashes: true
+    }));
+  }
+
+  // Emitted when the window is closed.
+  winPeer.on('closed', () => {
+    // Dereference the window object, usually you would store window
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    winPeer = null;
+  });
+
+}
+
+///////////////////////////
+// アプリ
 ///////////////////////////
 try {
 
@@ -105,12 +185,12 @@ function getIP() {
   const interfaces = networkInterfaces();
   let addresses = [];
   for (var k in interfaces) {
-      for (var k2 in interfaces[k]) {
-          const address = interfaces[k][k2];
-          if (address.family === 'IPv4' && !address.internal) {
-              addresses.push(address.address);
-          }
+    for (var k2 in interfaces[k]) {
+      const address = interfaces[k][k2];
+      if (address.family === 'IPv4' && !address.internal) {
+        addresses.push(address.address);
       }
+    }
   }
   return addresses;
 }
@@ -125,7 +205,7 @@ function initMe() {
 initMe();
 
 ///////////////////////////
-//
+// ブロックチェーン
 ///////////////////////////
 function initBlockChain() {
   blockChain = new BlockChain();
@@ -133,11 +213,16 @@ function initBlockChain() {
 
   blockChain.init(p2p, function (blocks: Block[]) {
     win.webContents.send('/onBlocks', blockChain.getBlockchain());
+    if (winExplore) {
+      winExplore.webContents.send('/onBlocks', blockChain.getBlockchain());
+    }
   });
 
   p2p.init(blockChain, function (websockets: WebSocket[]) {
     const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
-    win.webContents.send('/onPeers', peers);
+    if (winPeer) {
+      winPeer.webContents.send('/onPeers', peers);
+    }
   });
 
   p2p.initP2PServer(p2pPort);
@@ -145,7 +230,7 @@ function initBlockChain() {
 initBlockChain();
 
 ///////////////////////////
-//
+// IPC
 ///////////////////////////
 function initIpcMain() {
 
@@ -155,6 +240,10 @@ function initIpcMain() {
 
     // 非同期
     win.webContents.send('/onBlocks', blockChain.getBlockchain());
+    if (winExplore) {
+      winExplore.webContents.send('/onBlocks', blockChain.getBlockchain());
+    }
+
   });
 
   ipcMain.on('/mineBlock', function (event, args) {
@@ -173,7 +262,9 @@ function initIpcMain() {
 
     // 非同期
     const peers = p2p.getSockets().map((s: any) => s._socket.remoteAddress + ':' + s._socket.remotePort);
-    win.webContents.send('/onPeers', peers);
+    if (winPeer) {
+      winPeer.webContents.send('/onPeers', peers);
+    }
   });
 
   ipcMain.on('/addPeer', function (event, args) {
@@ -196,11 +287,13 @@ function initIpcMain() {
   ipcMain.on('/me', function (event, args) {
     win.webContents.send('/onMe', me.name);
   });
-  
+
   // IP
-  
+
   ipcMain.on('/ip', function (event, args) {
-    win.webContents.send('/onIP', getIP());
+    if (winPeer) {
+      winPeer.webContents.send('/onIP', getIP());
+    }
   });
 
 }

@@ -25,9 +25,4 @@ export class BlocksComponent implements OnInit {
     });
 
   }
-
-  mineBlock(data: String) {
-    this.blockChainService.mineBlock(data);
-  }
-
 }

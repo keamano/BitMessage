@@ -1,7 +1,7 @@
 <div id="box-list">
-  <div class="{{'box' + message.card}} box {{'wf-' + message.font}}" *ngFor="let message of messages">
-    <span class="box-title">{{message.from}} より</span>
-    <pre><p>{{message.text}}</p></pre>
+  <div class="{{'box' + message.card}} box" *ngFor="let message of messages">
+    <span class="box-title {{'wf-' + message.font}}">{{message.from}} より</span>
+    <pre class="box-text {{'wf-' + message.font}}" >{{message.text}}</pre>
     <p class="box-footer">{{message.to}} さんへ ({{message.date | date:'fullDate'}})</p>
   </div>
 </div>
