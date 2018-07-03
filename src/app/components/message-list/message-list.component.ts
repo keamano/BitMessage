@@ -18,8 +18,11 @@ export class MessageListComponent implements OnInit, OnDestroy {
   users: string[] = [];
   messages: Message[] = [];
 
+  // Sub Data
+  toMeMessageLenght: number;
+
   // Subscription
-  meSubscription : Subscription;
+  meSubscription: Subscription;
   messageSubscription: Subscription;
 
   constructor(
@@ -37,8 +40,9 @@ export class MessageListComponent implements OnInit, OnDestroy {
       }
 
       this.messageSubscription = this.messageService.messages$.subscribe(messages => {
+        let toMeMessageLenght = 0;
         this.messages = messages.filter(message => {
-          
+
           // ユーザーリストを更新
           if (this.me !== message.from && this.users.indexOf(message.from) < 0) {
             this.users.push(message.from);
@@ -47,12 +51,34 @@ export class MessageListComponent implements OnInit, OnDestroy {
             this.users.push(message.to);
           }
 
+          let isToMeMessage = message.to === this.me;
+          let isFromMeMessage = message.from === this.me;
+
+          if (isToMeMessage) {
+            toMeMessageLenght++;
+          }
+
           // 自分へと自分からのメッセージのみ
-          return (message.to === this.me || message.from === this.me);
+          return isToMeMessage || isFromMeMessage;
           // 自分へのメッセージのみ
-          // return (message.to === this.me);
+          // return isToMeMessage;
         });
+
         this.changeDetectorRef.detectChanges();
+
+        if (toMeMessageLenght > 0 && toMeMessageLenght > this.toMeMessageLenght) {
+          const lastMessage = this.messages[this.messages.length -1];
+
+          // 現在時刻から１０秒以内のメッセージの場合、通知
+          const nowTime = Date.parse((new Date().toString()));
+          const lastTime = Date.parse(lastMessage.date);
+          if (nowTime - lastTime > 0) {
+            return;
+          }
+
+          this.messageService.nofity(lastMessage);
+        }
+        this.toMeMessageLenght = toMeMessageLenght;
       });
     });
   }

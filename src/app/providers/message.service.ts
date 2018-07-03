@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
+import { ElectronService } from './electron.service';
 import { BlockChainService } from './block-chain.service';
 import { Message } from '../interfaces/message';
 
@@ -31,6 +32,7 @@ export class MessageService {
 
   // コンストラクタ
   constructor(
+    private electronService: ElectronService,
     private blockChainService: BlockChainService
   ) {
 
@@ -42,4 +44,16 @@ export class MessageService {
     this.blockChainService.mineBlock(data);
   }
 
+  nofity(message: Message) {
+    const title = `${message.from}さんからメッセージが届きました。`;
+    const body = `${message.text}`;
+
+    let myNotification = new Notification(title, {
+      body: body
+    });
+    
+    myNotification.onclick = () => {
+      console.log('Notification clicked')
+    }
+  }
 }

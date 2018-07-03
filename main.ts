@@ -14,7 +14,7 @@ import { P2P } from './src_blockchain/p2p';
 const p2pPort: number = parseInt(process.env.P2P_PORT) || 6001;
 
 // Electron
-let win, serve;
+let win: BrowserWindow, serve;
 const args = process.argv.slice(1);
 serve = args.some(val => val === '--serve');
 
@@ -194,9 +194,10 @@ function initIpcMain() {
   });
   
   // IP
+  
   ipcMain.on('/ip', function (event, args) {
     win.webContents.send('/onIP', getIP());
   });
-  
+
 }
 initIpcMain();
