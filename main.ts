@@ -1,10 +1,11 @@
 import { networkInterfaces } from 'os';
 
-import { app, BrowserWindow, screen } from 'electron';
+import { app, BrowserWindow, screen, Menu } from 'electron';
 import { ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
+import { getMenuTemplate } from './menu'
 import { Me } from './src_blockchain/me';
 
 import { Block } from './src_blockchain/block';
@@ -62,6 +63,9 @@ function createWindow() {
     // when you should delete the corresponding element.
     win = null;
   });
+
+  const menu = Menu.buildFromTemplate(getMenuTemplate())
+  Menu.setApplicationMenu(menu)
 }
 
 ///////////////////////////
