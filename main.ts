@@ -98,7 +98,7 @@ try {
 // ユーザ読み込み
 ///////////////////////////
 function initMe() {
-  me = new Me();
+  me = new Me(app.getPath('userData'));
   me.load();
 }
 initMe();
