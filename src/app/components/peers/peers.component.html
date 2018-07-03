@@ -1,4 +1,12 @@
 <div>
+
+  <p>選択するとIPがクリップボードにコピーされます。</p>
+  <select id="ip" name="ip" size="3" (change)="ipToClipboard($event.target.value)" required>
+    <option *ngFor="let ip of ips" value="{{ip}}">{{ip}}</option>
+  </select>
+
+  <hr>
+
   <label for="host">host:</label>
   <input id="host" name="host" type="text" #host />
   <label for="port">port:</label>
@@ -6,9 +14,6 @@
   <button type="button" (click)="addPeer(host.value, port.value)">Add Peer</button>
 
   <ul>
-      <li *ngFor="let peer of peers">{{peer}}</li>
+    <li *ngFor="let peer of peers">{{peer}}</li>
   </ul>
 </div>
-
-
-

@@ -1,3 +1,5 @@
+import { networkInterfaces } from 'os';
+
 import { app, BrowserWindow, screen } from 'electron';
 import { ipcMain } from 'electron';
 import * as path from 'path';
@@ -94,6 +96,21 @@ try {
   // throw e;
 }
 
+
+function getIP() {
+  const interfaces = networkInterfaces();
+  let addresses = [];
+  for (var k in interfaces) {
+      for (var k2 in interfaces[k]) {
+          const address = interfaces[k][k2];
+          if (address.family === 'IPv4' && !address.internal) {
+              addresses.push(address.address);
+          }
+      }
+  }
+  return addresses;
+}
+
 ///////////////////////////
 // ユーザ読み込み
 ///////////////////////////
@@ -175,5 +192,11 @@ function initIpcMain() {
   ipcMain.on('/me', function (event, args) {
     win.webContents.send('/onMe', me.name);
   });
+  
+  // IP
+  ipcMain.on('/ip', function (event, args) {
+    win.webContents.send('/onIP', getIP());
+  });
+  
 }
 initIpcMain();
