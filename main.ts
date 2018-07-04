@@ -48,14 +48,10 @@ function createWindow() {
     });
     win.loadURL('http://localhost:4200');
   } else {
-    win.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    win.loadURL(`file://${__dirname}/dist/index.html`);
   }
 
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
@@ -92,11 +88,7 @@ function toggleExploreWindow(focusedWindow: WebContents) {
     });
     winExplore.loadURL('http://localhost:4200#explore');
   } else {
-    winExplore.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html#explore'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    winExplore.loadURL(`file://${__dirname}/dist/index.html#explore`);
   }
 
   // Emitted when the window is closed.
@@ -131,11 +123,7 @@ function togglePeerWindow(focusedWindow: WebContents) {
     });
     winPeer.loadURL('http://localhost:4200#peer');
   } else {
-    winPeer.loadURL(url.format({
-      pathname: path.join(__dirname, 'dist/index.html#peer'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    winPeer.loadURL(`file://${__dirname}/dist/index.html#peer`);
   }
 
   // Emitted when the window is closed.

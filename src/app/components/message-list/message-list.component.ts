@@ -66,6 +66,8 @@ export class MessageListComponent implements OnInit, OnDestroy {
 
         this.changeDetectorRef.detectChanges();
 
+        window.scrollTo(0,document.body.scrollHeight);
+
         if (toMeMessageLenght > 0 && toMeMessageLenght > this.toMeMessageLenght) {
           this.notify();
         }
