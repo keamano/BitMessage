@@ -45,8 +45,8 @@ export class PeersComponent implements OnInit {
   }
 
   // Peer
-  addPeer(hostname: string, port: string) {
-    this.blockChainService.addPeer(hostname, port);
+  addPeer(hostname: string) {
+    this.blockChainService.addPeer(hostname, "6001");
   }
 
 }

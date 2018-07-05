@@ -59,9 +59,11 @@ export class MessageListComponent implements OnInit, OnDestroy {
           }
 
           // 自分へと自分からのメッセージのみ
-          return (isToMeMessage || isFromMeMessage);
+          // return (isToMeMessage || isFromMeMessage);
           // 自分へのメッセージのみ
           // return isToMeMessage;
+          // 全てのメッセージを受け取る
+          return true;
         });
 
         this.changeDetectorRef.detectChanges();

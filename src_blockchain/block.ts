@@ -49,9 +49,16 @@ export class Block {
 
     // ブロックハッシュを計算する
     // ブロック内の全てのデータから計算する
-    static calculateHash(index: number, previousHash: string, timestamp: number, data: string,
-        difficulty: number, nonce: number): string {
-        return CryptoJS.SHA256(index + previousHash + timestamp + data + difficulty + nonce).toString();
+    static calculateHash(
+        index: number, previousHash: string, 
+        timestamp: number, data: string,
+        difficulty: number, nonce: number
+    ): string {
+        return CryptoJS.SHA256
+        (
+            index + previousHash + timestamp + 
+            data + difficulty + nonce
+        ).toString();
     }
 
     // ブロックからブロックのハッシュを計算

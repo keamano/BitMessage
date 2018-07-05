@@ -74,11 +74,14 @@ function toggleExploreWindow(focusedWindow: WebContents) {
     return;
   }
 
+  const electronScreen = screen;
+  const size = electronScreen.getPrimaryDisplay().workAreaSize;
+
   // Create the browser window.
   winExplore = new BrowserWindow({
     x: 0,
     y: 0,
-    width: 800,
+    width: size.width,
     height: 600
   });
 

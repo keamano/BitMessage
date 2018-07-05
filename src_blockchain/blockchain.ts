@@ -44,22 +44,24 @@ export class BlockChain {
     // 次のブロックを生成し、ブロックチェーンに追加する
     public generateNextBlock(blockData: string) {
 
-        // 前のブロック(現在の最新ブロック)から
+        // 前のブロック(現在の最新ブロック)から新しいブロックの値を決定
         const previousBlock: Block = this.getLatestBlock();
         const nextIndex: number = previousBlock.index + 1;
         const nextPreviousBlockHash: string = previousBlock.hash;
+
         // タイムスタンプは現在時刻
         const nextTimestamp: number = Util.getCurrentTimestamp();
-        // ブロックのデータ
-        // blockData = blockData;
+
         // ブロック生成に置ける難しさ
         const difficulty: number = BlockChain.getDifficulty(this.getBlockchain());
         console.log('difficulty: ' + difficulty);
-        // ブロックのハッシュ
-        // ここでは計算しない
 
-        // ブロックを生成し、ブロックチェーンに追加する
-        const newBlock: Block = Block.findBlock(nextIndex, nextPreviousBlockHash, nextTimestamp, blockData, difficulty);
+        // マイニングしてブロックのハッシュを計算
+        // ブロックを生成し
+        const newBlock: Block = Block.findBlock(
+            nextIndex, nextPreviousBlockHash, nextTimestamp, blockData, difficulty);
+
+        // ブロックチェーンに追加する
         this.addBlock(newBlock);
 
         this.p2p.broadcastLatest();
@@ -139,20 +141,27 @@ export class BlockChain {
     ////////////////////
 
     private static isValidNewBlock(newBlock: Block, previousBlock: Block): boolean {
+        
         if (!Block.isValidBlockStructure(newBlock)) {
+            // 構造は正しくなければなりません
             console.log('invalid structure');
             return false;
         }
+
         if (previousBlock.index + 1 !== newBlock.index) {
+            // ブロックのインデックスは、以前のものより大きな1つの数値でなければなりません
             console.log('invalid index');
             return false;
         } else if (previousBlock.hash !== newBlock.previousHash) {
+            // previousHashは前のブロックのhashと同じでなければなりません
             console.log('invalid previoushash');
             return false;
         } else if (!this.isValidTimestamp(newBlock, previousBlock)) {
+            // タイムスタンプは正しくなければなりません
             console.log('invalid timestamp');
             return false;
         } else if (!Block.hasValidHash(newBlock)) {
+            // hash自体が有効である必要があります
             return false;
         }
         return true;

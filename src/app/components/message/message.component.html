@@ -1,6 +1,15 @@
 <!-- <form #myForm="ngForm" (ngSubmit)="send();myForm.reset();"> -->
 <form #myForm="ngForm" (ngSubmit)="send()">
 
+  <mat-form-field class="example-full-width">
+    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+
   <!-- 送信先 -->
   <div>
     <input id="to" name="to" type="text" [(ngModel)]="message.to" required minlength="2" maxlength="10" #to="ngModel" />

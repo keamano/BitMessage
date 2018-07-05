@@ -1,19 +1,25 @@
 <div>
 
-  <p>選択するとIPがクリップボードにコピーされます。</p>
-  <select id="ip" name="ip" size="3" (change)="ipToClipboard($event.target.value)" required>
-    <option *ngFor="let ip of ips" value="{{ip}}">{{ip}}</option>
-  </select>
+  <div>
+    <p>自分のIPを友達に共有しよう</p>
+    <select id="ip" name="ip" size="3" (change)="ipToClipboard($event.target.value)" required>
+      <option *ngFor="let ip of ips" value="{{ip}}">{{ip}}</option>
+    </select>
+  </div>
 
   <hr>
 
-  <label for="host">host:</label>
-  <input id="host" name="host" type="text" #host />
-  <label for="port">port:</label>
-  <input id="port" name="port" type="text" #port />
-  <button type="button" (click)="addPeer(host.value, port.value)">Add Peer</button>
+  <div>
+    <label for="host">友達のIPを入力しよう</label>
+    <input id="host" name="host" type="text" #host />
+    <button type="button" (click)="addPeer(host.value)">追加</button>
+  </div>
 
-  <ul>
-    <li *ngFor="let peer of peers">{{peer}}</li>
-  </ul>
+  <div>
+    <label for="host">友達のIPリスト</label>
+    <ul>
+      <li *ngFor="let peer of peers">{{peer}}</li>
+    </ul>
+  </div>
+
 </div>

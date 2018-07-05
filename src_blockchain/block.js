@@ -33,7 +33,8 @@ var Block = /** @class */ (function () {
     // ブロックハッシュを計算する
     // ブロック内の全てのデータから計算する
     Block.calculateHash = function (index, previousHash, timestamp, data, difficulty, nonce) {
-        return CryptoJS.SHA256(index + previousHash + timestamp + data + difficulty + nonce).toString();
+        return CryptoJS.SHA256(index + previousHash + timestamp +
+            data + difficulty + nonce).toString();
     };
     // ブロックからブロックのハッシュを計算
     Block.calculateHashForBlock = function (block) {
