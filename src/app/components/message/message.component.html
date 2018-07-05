@@ -1,17 +1,24 @@
 <!-- <form #myForm="ngForm" (ngSubmit)="send();myForm.reset();"> -->
-<form #myForm="ngForm" (ngSubmit)="send()">
+<!-- <form #myForm="ngForm" class="example-form" (ngSubmit)="send()"> -->
+<form #myForm="ngForm" class="example-form">
 
-  <mat-form-field class="example-full-width">
-    <input type="text" placeholder="Pick one" aria-label="Number" matInput [formControl]="myControl" [matAutocomplete]="auto">
+  <mat-form-field class="example-full-width" style="color: #2e2e2e">
+    <input id="to" name="to" type="text" placeholder="宛名" required minlength="2" maxlength="20" aria-label="Number" matInput
+      [formControl]="usersControl" [matAutocomplete]="auto">
     <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+      <mat-option *ngFor="let option of usersFilteredOptions | async" [value]="option">
         {{option}}
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>
+  <!-- <ul>
+    <li [hidden]="!to.errors?.required">宛名は必須です。</li>
+    <li [hidden]="!to.errors?.minlength">宛名は2文字以上で入力してください。</li>
+    <li [hidden]="!to.errors?.maxlength">宛名は10文字以内で入力してください。</li>
+  </ul> -->
 
   <!-- 送信先 -->
-  <div>
+  <!-- <div>
     <input id="to" name="to" type="text" [(ngModel)]="message.to" required minlength="2" maxlength="10" #to="ngModel" />
     <label for="to">さんへ</label>
     <ul>
@@ -19,32 +26,56 @@
       <li [hidden]="!to.errors?.minlength">宛名は2文字以上で入力してください。</li>
       <li [hidden]="!to.errors?.maxlength">宛名は10文字以内で入力してください。</li>
     </ul>
-  </div>
+  </div> -->
 
   <!-- フォント選択 -->
-  <div>
+  <mat-form-field style="width: 40%; margin: 0 12px">
+    <mat-select placeholder="フォント" [(ngModel)]="message.font" name="fonts" required>
+      <!-- <mat-option *ngFor="let font of FONTS" [value]="food.value"> -->
+      <mat-option *ngFor="let font of FONTS ; index as i" value="{{i+1}}">
+        フォント{{i+1}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- <div>
     <select id="fonts" name="fonts" [(ngModel)]="message.font" required>
       <option value="{{i+1}}" label="フォント{{i+1}}" *ngFor="let font of FONTS ; index as i"></option>
     </select>
-  </div>
+  </div> -->
 
   <!-- カード選択 -->
-  <div>
+  <mat-form-field style="width: 40%; margin: 0 12px">
+    <mat-select placeholder="カード" [(ngModel)]="message.card" name="cards" required>
+      <!-- <mat-option *ngFor="let font of FONTS" [value]="food.value"> -->
+      <mat-option *ngFor="let card of CARDS ; index as i" value="{{i+1}}">
+        カード{{i+1}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <!-- <div>
     <select id="cards" name="cards" [(ngModel)]="message.card" required>
       <option value="{{i+1}}" label="カード{{i+1}}" *ngFor="let card of CARDS ; index as i"></option>
     </select>
-  </div>
+  </div> -->
 
   <!-- メッセージ選択 -->
-  <div>
+  <!-- <div>
     <textarea id="text" name="text" rows="5" cols="30" [(ngModel)]="message.text" required minlength="2" maxlength="100" #text="ngModel"></textarea>
     <ul>
       <li [hidden]="!text.errors?.required">メッセージは必須です。</li>
       <li [hidden]="!text.errors?.minlength">メッセージは2文字以上で入力してください。</li>
       <li [hidden]="!text.errors?.maxlength">メッセージは10文字以内で入力してください。</li>
     </ul>
-  </div>
+  </div> -->
 
-  <input type="submit" value="送る" [disabled]="myForm.invalid" />
+  <mat-form-field class="example-full-width" style="color: #2e2e2e">
+    <textarea name="text" rows="3" matInput placeholder="メッセージ" [(ngModel)]="message.text" required minlength="5" maxlength="100" #text="ngModel"></textarea>
+  </mat-form-field>
+
+  <br>
+
+  <!-- <input type="submit" value="送る" [disabled]="myForm.invalid" /> -->
+  <button mat-raised-button color="accent" (click)="send()">送る</button>
 
 </form>

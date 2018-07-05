@@ -34,7 +34,7 @@
     "e2e": "ng e2e"
   },
   "dependencies": {
-    "@angular/animations": "^6.0.7",
+    "@angular/animations": "^6.0.5",
     "@angular/cdk": "^6.3.2",
     "@angular/material": "^6.3.2",
     "crypto-js": "^3.1.6",

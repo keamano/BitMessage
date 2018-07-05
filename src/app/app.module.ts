@@ -13,7 +13,8 @@ import { MatButtonModule, MatCheckboxModule } from '@angular/material';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material';
 import { MatInputModule } from '@angular/material';
-
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 // NG Translate
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
@@ -58,6 +59,8 @@ export function HttpLoaderFactory(http: HttpClient) {
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
+    MatSelectModule,
+    MatSnackBarModule,
     HttpClientModule,
     AppRoutingModule,
     TranslateModule.forRoot({
